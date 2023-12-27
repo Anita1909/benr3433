@@ -1,0 +1,71 @@
+### GOODLUCK ###
+POST http://localhost:3000/register/user
+Content-Type: application/json
+
+{
+  "username": "syahirah",
+  "password": "syahirah12345",
+  "name": "Syahirah",
+  "officerno": "123456",
+  "rank": "Captain",
+  "phone": "1234567890"
+}
+
+###
+POST http://localhost:3000/login/user
+Content-Type: application/json
+
+{
+  "username": "syahirah",
+  "password": "syahirah12345"
+}
+###
+
+###
+POST http://localhost:3000/visitorData
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "_id": "v04",
+  "name": "Syahirah",
+  "phoneNumber": "0123456789",
+  "visitingPurpose": "Visit Friends",
+  "visitingPerson": "Raj",
+  "visitedDate": "2023/06/5",
+  "timeIn": "10:00 AM",
+  "timeOut": "12:00 AM",
+  "vehicleType": "Car"
+  
+}
+
+###
+PATCH  http://localhost:8080/visitorData/649e970b06c082b339dd38b9
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlkM2FhNDNhYmRiZWEzMmMzYmRlMWMiLCJ1c2VybmFtZSI6ImFsaWZhaCIsInBhc3N3b3JkIjoiYWxpZmFoMTIzNDUiLCJuYW1lIjoiQWxpZmFoIiwiZW1haWwiOiJhbGlmYWhAZXhhbXBsZS5jb20iLCJpYXQiOjE2ODgxMTY4MzN9.cWyXPMiLEvg03DxMpJtz8RPVG6zdmo2iZhzVHjlPeww
+
+
+{
+  "_id": "649e970b06c082b339dd38b3",
+  "name": "Amira",
+  "phoneNumber": "0135686232",
+  "visitingPurpose": "Visit Friends",
+  "visitingPerson": "Amir",
+  "visitedDate": "2023/06/5",
+  "timeIn": "12:00 PM",
+  "timeOut": "14:00 PM",
+  "vehicleType": "Motorcycle"
+  
+}
+
+###
+DELETE http://localhost:1923/visitor/v03
+Authorization: Bearer
+###
+
+###
+GET http://localhost:1923/visitorData
+###
+
+
+
