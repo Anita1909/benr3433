@@ -22,50 +22,36 @@ Content-Type: application/json
 ###
 
 ###
-POST http://localhost:3000/visitorData
+GET http://localhost:3000/viewvisitor
 Content-Type: application/json
-Authorization: Bearer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDM2MTQ1NTAsImV4cCI6MTcwMzYxODE1MH0.Ucy6IWlP2Ga-Rwv74WrSgKB8zu0x1ggO93D0ruw059o
 
 {
-  "_id": "v04",
-  "name": "Syahirah",
-  "phoneNumber": "0123456789",
-  "visitingPurpose": "Visit Friends",
-  "visitingPerson": "Raj",
-  "visitedDate": "2023/06/5",
-  "timeIn": "10:00 AM",
-  "timeOut": "12:00 AM",
-  "vehicleType": "Car"
+  "username": "zizun",
+  "password": "98765",
+  "Name": "Zizun",
+  "Age": "80",
+  "Gender": "female",
+  "Address": "PJ",
+  "Zipcode": "64100",
+  "Relation": "GranCat"
   
 }
 
 ###
-PATCH  http://localhost:8080/visitorData/649e970b06c082b339dd38b9
+POST http://localhost:3000/visitorpass
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlkM2FhNDNhYmRiZWEzMmMzYmRlMWMiLCJ1c2VybmFtZSI6ImFsaWZhaCIsInBhc3N3b3JkIjoiYWxpZmFoMTIzNDUiLCJuYW1lIjoiQWxpZmFoIiwiZW1haWwiOiJhbGlmYWhAZXhhbXBsZS5jb20iLCJpYXQiOjE2ODgxMTY4MzN9.cWyXPMiLEvg03DxMpJtz8RPVG6zdmo2iZhzVHjlPeww
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDM2MTg4MjAsImV4cCI6MTcwMzYyMjQyMH0.dC2wcrALZDP6OERljOsMFKn3eCLPg6XjHyqY9RAoC64
 
 {
-  "_id": "649e970b06c082b339dd38b3",
-  "name": "Amira",
-  "phoneNumber": "0135686232",
-  "visitingPurpose": "Visit Friends",
-  "visitingPerson": "Amir",
-  "visitedDate": "2023/06/5",
-  "timeIn": "12:00 PM",
-  "timeOut": "14:00 PM",
-  "vehicleType": "Motorcycle"
+  "visitorId": "658b11f2115e9b5a44ed7cb8",
+  "issuedBy":"Mochie",
+  "validUntil": "12pm",
+  "issuedAt": "27 Dec 2023"
   
 }
 
-###
-DELETE http://localhost:1923/visitor/v03
-Authorization: Bearer
-###
 
-###
-GET http://localhost:1923/visitorData
-###
 
 
 

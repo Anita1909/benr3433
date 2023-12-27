@@ -190,50 +190,6 @@ const user = [];
 app.use(express.json());
 
 
-
-/**
- * @swagger
- * /login/visitor:
- *   post:
- *     description: Visitor Login
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema: 
- *             type: object
- *             properties:
- *               username: 
- *                 type: string
- *               password: 
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful login
- *       401:
- *         description: Invalid username or password
- */
-
-app.get('/login/visitor', async (req, res) => {
-	console.log(req.body);
-
-	let user = await Visitor.login(req.body.username, req.body.password);
-
-	if (user.status == ("invalid username" || "invalid password")) {
-		res.status(401).send("invalid username or password");
-		return
-	}
-
-	res.status(200).json({
-		username: user.username,
-		name: user.Name,
-		age: user.Age,
-		gender: user.Gender,
-		relation: user.Relation,
-		token: generateAccessToken({ username: user.username })
-	});
-})
-
 /**
  * @swagger
  * /register/user:
@@ -280,4 +236,206 @@ app.post('/register/user', async (req, res) => {
     res.status(201).json({ message: 'User registered successfully' });
   });
 
+  
+/**
+ * @swagger
+ * /registervisitor:
+ *   post:
+ *     description: Register a new visitor
+ *     tags: 
+ *      - visitor
+ *     security:   
+ *      - jwt: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties:
+ *               username: 
+ *                 type: string
+ *               password: 
+ *                 type: string
+ *               Name: 
+ *                 type: string
+ *               Age:
+ *                 type: string
+ *               Gender:
+ *                 type: string
+ *               Address:
+ *                 type: string
+ *               Zipcode:
+ *                 type: string
+ *               Relation:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Visitor registered successfully
+ *       500:
+ *         description: Error occurred while registering the visitor
+ */
 
+
+// Protected route for registering a visitor - token required
+app.post('/registervisitor',verifyToken, async (req, res) => {
+    try {
+      const visitor = db.collection('visitor');
+     
+
+       // Check if the user is authenticated (you might want to use middleware for this)
+    if (!req.user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+       const { username, password, Name, Age, Gender, Address, Zipcode, Relation } = req.body;
+      await visitor.insertOne({ username, password, Name, Age, Gender, Address, Zipcode, Relation });
+
+      res.status(201).json({ message: 'Visitor registered successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'An error occurred while registering the visitor' });
+    }
+  });
+
+  /**
+ * @swagger
+ * /viewvisitor:
+ *    get:
+ *     description: View all visitors
+ *     tags: 
+ *      - visitor
+ *     security:   
+ *      - jwt: []
+ *     responses:
+ *       200:
+ *         description: List of all visitors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/visitor'
+ *       500:
+ *         description: Error occurred while fetching visitors
+ */
+
+
+// Protected route for viewing visitors - token required
+app.get('/viewvisitor', verifyToken, async (req, res) => {
+    try {
+      const visitor = db.collection('visitor');
+      const results = await visitor.find().toArray();
+  
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ error: 'An error occurred while fetching visitors' });
+    }
+  });
+
+  
+/**
+ * @swagger
+ * /visitorpass:
+ *   post:
+ *     description: Create visitor passes
+ *     tags: 
+ *      - visitor
+ *     security:   
+ *      - jwt: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - visitorId
+ *               - issuedBy
+ *               - validUntil
+ *             properties:
+ *               visitorId:
+ *                 type: string
+ *               issuedBy:
+ *                 type: string
+ *               validUntil:
+ *                 type: string
+ *                 format: date
+ *     responses:
+ *       201:
+ *         description: Visitor pass issued successfully
+ *       500:
+ *         description: Error occurred while issuing the pass
+ */
+
+
+// Admin issue visitor pass
+// Admin Issue Visitor Pass
+app.post('/visitorpass', verifyToken, async (req, res) => {
+    const { visitorId, issuedBy, validUntil } = req.body;
+  
+    try {
+      const visitorpass = db.collection('visitorpass');
+  
+      const newPass = {
+        visitorId,
+        issuedBy,
+        validUntil,
+        issuedAt: new Date(),
+      };
+  
+      await visitorpass.insertOne(newPass);
+      res.status(201).json({ message: 'Visitor pass issued successfully' });
+    } catch (error) {
+      console.error('Issue Pass Error:', error.message);
+      res.status(500).json({ error: 'An error occurred while issuing the pass', details: error.message });
+    }
+  });
+  
+  
+/**
+ * @swagger
+ * /retrievepass/{visitorId}:
+ *    get:
+ *     description: Retrieve visitor passes
+ *     tags: 
+ *      - pass
+ *     security:   
+ *      - jwt: []
+ *     parameters:
+ *       - in: path
+ *         name: visitorId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The visitor ID
+ *     responses:
+ *       200:
+ *         description: Visitor pass details
+ *       404:
+ *         description: No pass found for this visitor
+ *       500:
+ *         description: Error occurred while retrieving the pass
+ */
+
+
+//Visitor to Retrieve Their Pass
+// Visitor Retrieve Pass
+app.get('/retrievepass/:visitorId', async (req, res) => {
+    const visitorId = req.params.visitorId;
+  
+    try {
+      const visitorpass = db.collection('visitorpass');
+      const pass = await visitorpass.findOne({ visitorId });
+  
+      if (!pass) {
+        return res.status(404).json({ error: 'No pass found for this visitor' });
+      }
+  
+      res.json(pass);
+    } catch (error) {
+      console.error('Retrieve Pass Error:', error.message);
+      res.status(500).json({ error: 'An error occurred while retrieving the pass', details: error.message });
+    }
+  });
+  
+  
